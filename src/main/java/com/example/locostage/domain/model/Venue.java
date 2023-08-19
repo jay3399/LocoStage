@@ -18,5 +18,6 @@ public class Venue {
     private String website;
     private String phoneNumber;
     private String location;
+    private String country;
 
 }

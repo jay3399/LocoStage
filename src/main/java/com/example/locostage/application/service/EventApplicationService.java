@@ -15,10 +15,19 @@ public class EventApplicationService {
 
     public final EventService eventService;
 
+//    @Transactional
+//    public List<EventDTO> getLatestEvents(int limit) {
+//        return eventService.getLatestEvents(limit).stream().map(EventDTO::of)
+//                .collect(Collectors.toList());
+//    }
+
     @Transactional
-    public List<EventDTO> getLatestEvents(int limit) {
-        return eventService.getLatestEvents(limit).stream().map(EventDTO::of)
-                .collect(Collectors.toList());
+    public List<EventDTO> getLatestEventsV2(int limit , String country) {
+
+        return eventService.getLatestEventsByLocation(country, limit).stream().map(
+                EventDTO::of
+        ).collect(Collectors.toList());
+
     }
 
 

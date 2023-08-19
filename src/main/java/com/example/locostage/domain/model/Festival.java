@@ -9,8 +9,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Festival {
 
     @Id
