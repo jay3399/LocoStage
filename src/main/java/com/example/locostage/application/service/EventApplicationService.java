@@ -1,7 +1,6 @@
 package com.example.locostage.application.service;
 
 import com.example.locostage.application.dto.EventDTO;
-import com.example.locostage.domain.model.Event;
 import com.example.locostage.domain.service.EventService;
 import java.util.List;
 import java.util.stream.Collectors;

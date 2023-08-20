@@ -5,11 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Artist {
 
     @Id
@@ -20,10 +23,16 @@ public class Artist {
     private String profileImage;
     private String description;
 
-    @OneToMany(mappedBy = "artist")
-    private List<ArtistEvent> artistEvents;
+    public Artist(String name, String profileImage, String description) {
+        this.name = name;
+        this.profileImage = profileImage;
+        this.description = description;
+    }
 
     @OneToMany(mappedBy = "artist")
-    private List<ArtistFestival> artistFestivals;
+    private List<FestivalEvent> festivalEvents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "artist")
+    private List<ArtistFestival> artistFestivals = new ArrayList<>();
 
 }

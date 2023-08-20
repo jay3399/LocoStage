@@ -1,6 +1,6 @@
 package com.example.locostage.application.dto;
 
-import com.example.locostage.domain.model.Event;
+import com.example.locostage.domain.model.FestivalEvent;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -15,18 +15,18 @@ public class EventDTO {
     private String artistName;
     private String venueName;
 
-    private void set(Event event) {
-        this.eventName = event.getEventName();
-        this.description = event.getDescription();
-        this.date = event.getDate();
-        this.ticketLink = event.getTicketLink();
-        this.artistName = event.getArtist().getName();
-        this.venueName = event.getVenue().getName();
+    private void set(FestivalEvent festivalEvent) {
+        this.eventName = festivalEvent.getEventName();
+        this.description = festivalEvent.getDescription();
+        this.date = festivalEvent.getDate();
+        this.ticketLink = festivalEvent.getTicketLink();
+        this.artistName = festivalEvent.getArtist().getName();
+        this.venueName = festivalEvent.getVenue().getName();
     }
 
-    public static EventDTO of(Event event) {
+    public static EventDTO of(FestivalEvent festivalEvent) {
         EventDTO eventDTO = new EventDTO();
-        eventDTO.set(event);
+        eventDTO.set(festivalEvent);
         return eventDTO;
     }
 

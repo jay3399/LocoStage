@@ -2,7 +2,7 @@ package com.example.locostage.domain.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.example.locostage.domain.model.Event;
+import com.example.locostage.domain.model.FestivalEvent;
 import com.example.locostage.domain.repository.EventRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,58 +20,58 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
-class EventServiceTest {
+class FestivalEventServiceTest {
 
     @InjectMocks
     private EventService eventService;
     @Mock
     private EventRepository eventRepository;
-    private List<Event> mockEvents;
+    private List<FestivalEvent> mockFestivalEvents;
 
     @BeforeEach
     public void setUp() {
-        mockEvents = new ArrayList<>();
+        mockFestivalEvents = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
-            Event event = new Event();
-            event.setEventName("Test Event " + i);
-            event.setDate(LocalDateTime.now().minusDays(i));
-            mockEvents.add(event);
+            FestivalEvent festivalEvent = new FestivalEvent();
+            festivalEvent.setEventName("Test Event " + i);
+            festivalEvent.setDate(LocalDateTime.now().minusDays(i));
+            mockFestivalEvents.add(festivalEvent);
         }
         Pageable pageable = PageRequest.of(0, 3);
 
-        when(eventRepository.findByVenueCountryOrderOrderByDateDesc("US", pageable)).thenReturn(
-                mockEvents);
+        when(eventRepository.findByVenueCountryOrderByDateDesc("US", pageable)).thenReturn(
+                mockFestivalEvents);
     }
 
 
     @Test
     public void testGetLatestPerformancesByCountry() {
-        List<Event> events = eventService.getLatestEventsByLocation("US", 3);
+        List<FestivalEvent> festivalEvents = eventService.getLatestEventsByLocation("US", 3);
 
-        assertNotNull(events);
-        assertEquals(3, events.size());
+        assertNotNull(festivalEvents);
+        assertEquals(3, festivalEvents.size());
 
-        for (int i = 0; i < events.size(); i++) {
-            assertEquals("Test Event " + i, events.get(i).getEventName());
+        for (int i = 0; i < festivalEvents.size(); i++) {
+            assertEquals("Test Event " + i, festivalEvents.get(i).getEventName());
         }
 
         LocalDateTime previousDate = null;
 
-        for (Event event : events) {
+        for (FestivalEvent festivalEvent : festivalEvents) {
             if (previousDate == null) {
-                previousDate = event.getDate();
+                previousDate = festivalEvent.getDate();
                 continue;
             }
-            assertTrue(previousDate.isAfter(event.getDate()));
-            previousDate = event.getDate();
+            assertTrue(previousDate.isAfter(festivalEvent.getDate()));
+            previousDate = festivalEvent.getDate();
         }
 
     }
 
     @AfterEach
     public void tearDown() {
-        mockEvents.clear();
+        mockFestivalEvents.clear();
     }
 
 

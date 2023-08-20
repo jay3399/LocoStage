@@ -6,9 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class User {
 
         @Id
@@ -26,13 +31,13 @@ public class User {
         private String location;
 
         @OneToMany(mappedBy = "user")
-        private List<Review> reviews;
+        private List<Review> reviews = new ArrayList<>();
 
         @OneToMany(mappedBy = "user")
-        private List<UserEvent> userEvents;
+        private List<UserFestivalEvent> userEvents = new ArrayList<>();
 
         @OneToMany(mappedBy = "user")
-        private List<UserArtist> userArtists;
+        private List<UserArtist> userArtists = new ArrayList<>();
 
         // ... getters, setters, business methods ...
 
