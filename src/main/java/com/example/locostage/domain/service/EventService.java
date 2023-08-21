@@ -1,6 +1,6 @@
 package com.example.locostage.domain.service;
 
-import com.example.locostage.domain.model.FestivalEvent;
+import com.example.locostage.domain.model.back.FestivalEvent;
 import com.example.locostage.domain.repository.EventRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

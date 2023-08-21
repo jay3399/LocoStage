@@ -17,9 +17,10 @@ public class FestivalService {
     public List<Festival> getLatestFestivalsByCountry(String country, int limit) {
         PageRequest pageable = PageRequest.of(0, limit);
 
-        return repository.findByVenueCountryOrderByStartDateDesc(country, pageable);
-
+        return repository.findByVenueCountryOrderByStartDate(country, pageable);
     }
+
+
 
 
 

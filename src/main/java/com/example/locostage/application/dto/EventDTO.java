@@ -1,6 +1,6 @@
 package com.example.locostage.application.dto;
 
-import com.example.locostage.domain.model.FestivalEvent;
+import com.example.locostage.domain.model.back.FestivalEvent;
 import java.time.LocalDateTime;
 import lombok.Getter;
 

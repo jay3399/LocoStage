@@ -2,7 +2,7 @@ package com.example.locostage.domain.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.example.locostage.domain.model.FestivalEvent;
+import com.example.locostage.domain.model.back.FestivalEvent;
 import com.example.locostage.domain.repository.EventRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

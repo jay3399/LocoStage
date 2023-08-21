@@ -1,5 +1,7 @@
 package com.example.locostage.domain.model;
 
+import com.example.locostage.domain.model.back.ArtistFestival;
+import com.example.locostage.domain.model.back.SoleEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +32,7 @@ public class Artist {
     }
 
     @OneToMany(mappedBy = "artist")
-    private List<FestivalEvent> festivalEvents = new ArrayList<>();
+    private List<SoleEvent> soleEvents = new ArrayList<>();
 
     @OneToMany(mappedBy = "artist")
     private List<ArtistFestival> artistFestivals = new ArrayList<>();

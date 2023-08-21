@@ -1,6 +1,8 @@
 package com.example.locostage.application.service;
 
 import com.example.locostage.application.dto.EventDTO;
+import com.example.locostage.application.dto.EventMapper;
+import com.example.locostage.domain.model.back.FestivalEvent;
 import com.example.locostage.domain.service.EventService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,16 @@ public class EventApplicationService {
         return eventService.getLatestEventsByLocation(country, limit).stream().map(
                 EventDTO::of
         ).collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public List<EventDTO> getLatestEventsV3(int limit , String country) {
+
+        List<FestivalEvent> latestEventsByLocation = eventService.getLatestEventsByLocation(country,
+                limit);
+
+        return EventMapper.toDTOs(latestEventsByLocation);
 
     }
 

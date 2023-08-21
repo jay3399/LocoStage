@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
-    List<Festival> findByVenueCountryOrderByStartDateDesc(String country, Pageable pageable);
+    List<Festival> findByVenueCountryOrderByStartDate(String country , Pageable pageable);
+
 
 }

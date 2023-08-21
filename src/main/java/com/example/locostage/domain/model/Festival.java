@@ -1,6 +1,6 @@
 package com.example.locostage.domain.model;
 
-import jakarta.persistence.CascadeType;
+import com.example.locostage.domain.model.back.ArtistFestival;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +12,6 @@ import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

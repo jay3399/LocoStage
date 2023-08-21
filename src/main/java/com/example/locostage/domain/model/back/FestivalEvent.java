@@ -1,5 +1,9 @@
-package com.example.locostage.domain.model;
+package com.example.locostage.domain.model.back;
 
+import com.example.locostage.domain.model.Artist;
+import com.example.locostage.domain.model.Festival;
+import com.example.locostage.domain.model.Review;
+import com.example.locostage.domain.model.Venue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

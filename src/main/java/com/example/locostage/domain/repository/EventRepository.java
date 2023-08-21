@@ -1,6 +1,6 @@
 package com.example.locostage.domain.repository;
 
-import com.example.locostage.domain.model.FestivalEvent;
+import com.example.locostage.domain.model.back.FestivalEvent;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,8 +2,10 @@ package com.example.locostage.ui.controller;
 
 import com.example.locostage.application.dto.EventDTO;
 import com.example.locostage.application.dto.FestivalDTO;
+import com.example.locostage.application.service.ArtistApplicationService;
 import com.example.locostage.application.service.EventApplicationService;
 import com.example.locostage.application.service.FestivalApplicationService;
+import com.example.locostage.domain.model.Artist;
 import com.example.locostage.ui.request.MainPageResponse;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -27,13 +29,15 @@ public class MainController {
 
     private final EventApplicationService eventApplicationService;
     private final FestivalApplicationService festivalApplicationService;
+    private final ArtistApplicationService artistApplicationService;
     private final Executor executor;
 
     public MainController(EventApplicationService eventApplicationService,
-            FestivalApplicationService festivalApplicationService,
+            FestivalApplicationService festivalApplicationService, ArtistApplicationService artistApplicationService,
             @Qualifier("customExecutor") Executor executor) {
         this.eventApplicationService = eventApplicationService;
         this.festivalApplicationService = festivalApplicationService;
+        this.artistApplicationService = artistApplicationService;
         this.executor = executor;
     }
 
@@ -57,20 +61,27 @@ public class MainController {
                 () -> festivalApplicationService.getLatestFestivals(effectiveCountry, limit), executor
         );
 
-        CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(eventFuture, festivalFuture);
+        CompletableFuture<List<Artist>> artistFuture = CompletableFuture.supplyAsync(
+                () -> artistApplicationService.getAllArtists(effectiveCountry) , executor
+        );
+
+        CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(eventFuture, festivalFuture , artistFuture);
 
         List<EventDTO> eventDTOS;
         List<FestivalDTO> festivalDTOS;
+        List<Artist> artists;
+
 
         try {
             combinedFuture.join();
             eventDTOS = eventFuture.get(5, TimeUnit.SECONDS);
             festivalDTOS = festivalFuture.get(5, TimeUnit.SECONDS);
+            artists = artistFuture.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw e;
         }
 
-        MainPageResponse mainPageResponse = new MainPageResponse(eventDTOS, festivalDTOS);
+        MainPageResponse mainPageResponse = new MainPageResponse(eventDTOS, festivalDTOS, artists);
         return ResponseEntity.ok(mainPageResponse);
 
 

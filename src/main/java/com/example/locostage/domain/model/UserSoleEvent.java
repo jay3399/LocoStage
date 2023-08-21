@@ -1,5 +1,6 @@
 package com.example.locostage.domain.model;
 
+import com.example.locostage.domain.model.back.SoleEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
