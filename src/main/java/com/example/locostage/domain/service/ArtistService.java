@@ -14,16 +14,20 @@ public class ArtistService {
     private final ArtistRepository artistRepository;
 
 
-    public List<Artist> getArtistsByFestival(String country, Pageable pageable) {
+//    public List<Artist> getArtistsByFestival(String country, Pageable pageable) {
+//
+//
+//        return artistRepository.findArtistByFestival(country, pageable);
+//
+//    }
+//
+//    public List<Artist> getArtistBySole(String country, Pageable pageable) {
+//
+//        return artistRepository.findArtistBySole(country, pageable);
+//    }
 
-
-        return artistRepository.findArtistByFestival(country, pageable);
-
-    }
-
-    public List<Artist> getArtistBySole(String country, Pageable pageable) {
-
-        return artistRepository.findArtistBySole(country, pageable);
+    public List<Artist> getAll(String country) {
+        return artistRepository.findAllArtistsByCountryWithEvent(country);
     }
 
 

@@ -1,11 +1,14 @@
 package com.example.locostage.domain.repository;
 
 import com.example.locostage.domain.model.Artist;
-import com.example.locostage.domain.model.back.ArtistFestival;
+import com.example.locostage.domain.model.Event;
+import com.example.locostage.domain.model.EventFestival;
+import com.example.locostage.domain.model.EventSole;
 import com.example.locostage.domain.model.Festival;
 import com.example.locostage.domain.model.Venue;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,7 +18,7 @@ import org.springframework.test.annotation.Rollback;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-class FestivalEventRepositoryTest {
+class EventFestivalRepositoryTest {
 
 
     @Autowired
@@ -31,10 +34,13 @@ class FestivalEventRepositoryTest {
     ArtistRepository artistRepository;
 
     @Autowired
-    ArtistFestivalRepository artistFestivalRepository;
+    EventRepository eventRepository;
 
     @Autowired
-    EventRepository eventRepository;
+    EventFestivalRepository eventFestivalRepository;
+
+    @Autowired
+    EventSoleRepository eventSoleRepository;
 
     @Test
     @Rollback(value = false)
@@ -58,6 +64,7 @@ class FestivalEventRepositoryTest {
                 LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(4), "www.asdw.com",
                 venue1);
 
+
         repository.save(festival);
         repository.save(festival1);
         repository.save(festival2);
@@ -68,15 +75,36 @@ class FestivalEventRepositoryTest {
         artistRepository.save(artist);
         artistRepository.save(artist1);
 
-        ArtistFestival artistFestival = new ArtistFestival(artist, festival);
-        ArtistFestival artistFestival1 = new ArtistFestival(artist, festival1);
-        ArtistFestival artistFestival2 = new ArtistFestival(artist, festival2);
-        ArtistFestival artistFestival3 = new ArtistFestival(artist1, festival);
+        EventSole eventSole = new EventSole();
+        eventSole.setEventName("MartinTour");
+        eventSole.setDescription("단독");
+        eventSole.setVenue(venue);
+        eventSole.setArtist(artist);
+        eventSole.setTicketLink("www.tiketmaster.com");
+        eventSole.setDate(LocalDateTime.now());
 
-        artistFestivalRepository.save(artistFestival);
-        artistFestivalRepository.save(artistFestival1);
-        artistFestivalRepository.save(artistFestival2);
-        artistFestivalRepository.save(artistFestival3);
+        eventSoleRepository.save(eventSole);
+
+
+
+
+        EventFestival eventFestival = new EventFestival();
+        eventFestival.set(festival);
+        eventFestival.setEventName(festival.getName());
+        eventFestival.setTicketLink(festival.getTicketLink());
+        eventFestival.setDate(festival.getStartDate());
+        eventFestival.setVenue(venue);
+        eventFestival.setArtist(artist);
+        eventFestival.setDescription(festival.getDescription());
+        eventFestivalRepository.save(eventFestival);
+
+//        eventFestivalRepository.save(eventFestival);
+
+
+
+
+
+
 
 
 
@@ -87,6 +115,21 @@ class FestivalEventRepositoryTest {
     @Test
     @Rollback(value = false)
     public void delete() {
+
+        List<Event> all = eventRepository.findAll();
+
+        for (Event event : all) {
+
+            if (event instanceof EventFestival) {
+                System.out.println(((EventFestival) event).getFestival());
+                System.out.println(event.getEventName());
+                System.out.println(event.getArtist().getName());
+            }  else {
+                System.out.println(event.getEventName());
+                System.out.println(event.getArtist().getName());
+            }
+
+        }
 
 //        List<Artist> artistByFestival = artistRepository.findArtistByFestival();
 //

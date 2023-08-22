@@ -1,6 +1,5 @@
 package com.example.locostage.domain.model;
 
-import com.example.locostage.domain.model.back.ArtistFestival;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -36,8 +35,6 @@ public class Festival {
         this.startDate = startDate;
         this.endDate = endDate;
         this.ticketLink = ticketLink;
-        this.artistFestivals = new ArrayList<>();
-//        this.venue = venue;
         setVenue(venue);
     }
 
@@ -51,6 +48,6 @@ public class Festival {
     private Venue venue;
 
     @OneToMany(mappedBy = "festival")
-    private List<ArtistFestival> artistFestivals = new ArrayList<>();
+    private List<EventFestival> eventFestivals = new ArrayList<>();
 
 }

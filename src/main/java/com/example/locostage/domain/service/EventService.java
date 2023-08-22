@@ -1,10 +1,11 @@
 package com.example.locostage.domain.service;
 
-import com.example.locostage.domain.model.back.FestivalEvent;
+import com.example.locostage.domain.model.Event;
 import com.example.locostage.domain.repository.EventRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,12 +20,26 @@ public class EventService {
 //                        ));
 //    }
 
+//
+//    public List<FestivalEvent> getLatestEventsByLocation(String country, int limit) {
+//
+//        PageRequest pageable = PageRequest.of(0, limit);
+//
+//        return repository.findByVenueCountryOrderByDateDesc(country, pageable);
+//    }
 
-    public List<FestivalEvent> getLatestEventsByLocation(String country, int limit) {
+    public List<Event> getLatestEventsByLocationV2(String country ) {
 
-        PageRequest pageable = PageRequest.of(0, limit);
+        List<Event> allEventsByCountry = repository.findAllEventsByCountry(country);
 
-        return repository.findByVenueCountryOrderByDateDesc(country, pageable);
+        for (Event event : allEventsByCountry) {
+            System.out.println("event.getEventName( = " + event.getEventName());
+        }
+
+        return allEventsByCountry;
+
+
+
     }
 
 

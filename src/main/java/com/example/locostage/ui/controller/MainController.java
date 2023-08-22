@@ -1,5 +1,6 @@
 package com.example.locostage.ui.controller;
 
+import com.example.locostage.application.dto.ArtistDTO;
 import com.example.locostage.application.dto.EventDTO;
 import com.example.locostage.application.dto.FestivalDTO;
 import com.example.locostage.application.service.ArtistApplicationService;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,8 +45,11 @@ public class MainController {
     }
 
     @GetMapping
-    public ResponseEntity<MainPageResponse> getMainPageData(String country, int limit , Userlocation userLocation)
+    public ResponseEntity<MainPageResponse> getMainPageData(String country , Userlocation userLocation)
             throws ExecutionException, InterruptedException, TimeoutException {
+
+//        PageRequest pageable = PageRequest.of(0, 5);
+
 
         if (country == null && userLocation != null) {
 
@@ -55,33 +61,39 @@ public class MainController {
 
 
         CompletableFuture<List<EventDTO>> eventFuture = CompletableFuture.supplyAsync(
-                () -> eventApplicationService.getLatestEventsV2(limit, effectiveCountry), executor);
+                () -> eventApplicationService.getLatestEventsV4("US"), executor);
 
         CompletableFuture<List<FestivalDTO>> festivalFuture = CompletableFuture.supplyAsync(
-                () -> festivalApplicationService.getLatestFestivals(effectiveCountry, limit), executor
+                () -> festivalApplicationService.getLatestFestivals("US"), executor
         );
 
-        CompletableFuture<List<Artist>> artistFuture = CompletableFuture.supplyAsync(
-                () -> artistApplicationService.getAllArtists(effectiveCountry) , executor
+        CompletableFuture<List<ArtistDTO>> artistFuture = CompletableFuture.supplyAsync(
+                () -> artistApplicationService.getAllArtists("US") , executor
         );
 
         CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(eventFuture, festivalFuture , artistFuture);
 
         List<EventDTO> eventDTOS;
         List<FestivalDTO> festivalDTOS;
-        List<Artist> artists;
+        List<ArtistDTO> artistDTOS;
 
 
         try {
             combinedFuture.join();
             eventDTOS = eventFuture.get(5, TimeUnit.SECONDS);
             festivalDTOS = festivalFuture.get(5, TimeUnit.SECONDS);
-            artists = artistFuture.get(5, TimeUnit.SECONDS);
+            artistDTOS = artistFuture.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw e;
         }
 
-        MainPageResponse mainPageResponse = new MainPageResponse(eventDTOS, festivalDTOS, artists);
+        for (EventDTO eventDTO : eventDTOS) {
+            System.out.println("eventDTO.getArtistName( = " + eventDTO.getArtistName());
+        }
+
+        MainPageResponse mainPageResponse = new MainPageResponse(eventDTOS, festivalDTOS, artistDTOS);
+
+
         return ResponseEntity.ok(mainPageResponse);
 
 

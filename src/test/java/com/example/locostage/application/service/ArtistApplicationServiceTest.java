@@ -18,11 +18,7 @@ class ArtistApplicationServiceTest {
     @Test
     public void test() {
 
-        List<Artist> us = applicationService.getAllArtists("US");
 
-        for (Artist u : us) {
-            System.out.println("u.getName() = " + u.getName());
-        }
 
     }
 

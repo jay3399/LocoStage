@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Page</title>
+</head>
+
+<body>
+
+<!-- Displaying EventDTO -->
+<div id="event-list">
+  <h3>Events</h3>
+  <ul id="events"></ul>
+</div>
+
+<!-- Displaying FestivalDTO -->
+<div id="festival-list">
+  <h3>Festivals</h3>
+  <ul id="festivals"></ul>
+</div>
+
+<!-- Displaying ArtistDTO -->
+<div id="artist-list">
+  <h3>Artists</h3>
+  <ul id="artists"></ul>
+</div>
+
+<script>
+  async function loadMainPageData() {
+    try {
+      let response = await fetch("/api/main");
+      let data = await response.json();
+      console.log(data);
+
+      let eventUl = document.getElementById('events');
+      for (let event of data.eventDTOS) {
+        let li = document.createElement('li');
+        li.textContent = `${event.artistName} - ${event.venueName} - ${event.date}`;
+        eventUl.appendChild(li);
+      }
+
+      let festivalUl = document.getElementById('festivals');
+      for (let festival of data.festivalDTOS) {
+        let li = document.createElement('li');
+        li.textContent = `${festival.name} - ${festival.venueName} - ${festival.startDate}`;
+        festivalUl.appendChild(li);
+      }
+
+      // Sort ArtistDTO by name
+      data.artistDTOS.sort((a, b) => a.name.localeCompare(b.name));
+
+      let artistUl = document.getElementById('artists');
+      for (let artist of data.artistDTOS) {
+        let li = document.createElement('li');
+        li.textContent = artist.name;
+        artistUl.appendChild(li);
+      }
+    } catch (err) {
+      console.error("Error fetching main page data:", err);
+    }
+  }
+
+  // Load data on page load
+  window.onload = loadMainPageData;
+</script>
+
+</body>
+
+</html>

@@ -1,13 +1,18 @@
 package com.example.locostage.application.service;
 
+import com.example.locostage.application.dto.ArtistDTO;
+import com.example.locostage.application.dto.mapper.ArtistMapper;
+import com.example.locostage.application.dto.mapper.EventMapper;
 import com.example.locostage.domain.model.Artist;
 import com.example.locostage.domain.service.ArtistService;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,23 +22,10 @@ public class ArtistApplicationService {
     private final ArtistService artistService;
 
 
-    public List<Artist> getAllArtists(String country) {
+    public List<ArtistDTO> getAllArtists(String country ) {
 
-        PageRequest pageable = PageRequest.of(0, 5);
-
-        List<Artist> artistBySole = artistService.getArtistBySole("US", pageable);
-        List<Artist> artistByFestival = artistService.getArtistsByFestival("US", pageable);
-
-        Set<Artist> artistSet = new HashSet<>();
-        artistSet.addAll(artistBySole);
-        artistSet.addAll(artistByFestival);
-
-        return new ArrayList<>(artistSet);
+        return ArtistMapper.toDTOs(artistService.getAll(country));
     }
-
-
-
-
 
 
 }

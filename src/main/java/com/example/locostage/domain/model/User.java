@@ -34,7 +34,7 @@ public class User {
         private List<Review> reviews = new ArrayList<>();
 
         @OneToMany(mappedBy = "user")
-        private List<UserFestivalEvent> userEvents = new ArrayList<>();
+        private List<UserEvent> events = new ArrayList<>();
 
         @OneToMany(mappedBy = "user")
         private List<UserArtist> userArtists = new ArrayList<>();

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class UserFestivalEvent {
+public class UserEvent {
 
     // 이벤트 찜하기
 
@@ -25,9 +25,8 @@ public class UserFestivalEvent {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eventId")
-    private FestivalEvent festivalEvent;
+    private Event event;
 
     private Boolean alert;
-
 
 }

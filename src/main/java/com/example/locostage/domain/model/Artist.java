@@ -1,11 +1,10 @@
 package com.example.locostage.domain.model;
 
-import com.example.locostage.domain.model.back.ArtistFestival;
-import com.example.locostage.domain.model.back.SoleEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +30,14 @@ public class Artist {
         this.description = description;
     }
 
-    @OneToMany(mappedBy = "artist")
-    private List<SoleEvent> soleEvents = new ArrayList<>();
+//    @OneToMany(mappedBy = "artist")
+//    private List<SoleEvent> soleEvents = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "artist")
+//    private List<ArtistFestival> artistFestivals = new ArrayList<>();
 
     @OneToMany(mappedBy = "artist")
-    private List<ArtistFestival> artistFestivals = new ArrayList<>();
+    private List<Event> events = new ArrayList<>();
+
 
 }

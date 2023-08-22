@@ -1,12 +1,12 @@
 package com.example.locostage.application.service;
 
 import com.example.locostage.application.dto.EventDTO;
-import com.example.locostage.application.dto.EventMapper;
-import com.example.locostage.domain.model.back.FestivalEvent;
+import com.example.locostage.application.dto.mapper.EventMapper;
+import com.example.locostage.domain.model.Event;
 import com.example.locostage.domain.service.EventService;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,36 +16,13 @@ public class EventApplicationService {
 
     public final EventService eventService;
 
-//    @Transactional
-//    public List<EventDTO> getLatestEvents(int limit) {
-//        return eventService.getLatestEvents(limit).stream().map(EventDTO::of)
-//                .collect(Collectors.toList());
-//    }
 
     @Transactional
-    public List<EventDTO> getLatestEventsV2(int limit , String country) {
+    public List<EventDTO> getLatestEventsV4(String country ){
 
-        return eventService.getLatestEventsByLocation(country, limit).stream().map(
-                EventDTO::of
-        ).collect(Collectors.toList());
+        return EventMapper.toDTOs(eventService.getLatestEventsByLocationV2(country));
 
     }
-
-    @Transactional
-    public List<EventDTO> getLatestEventsV3(int limit , String country) {
-
-        List<FestivalEvent> latestEventsByLocation = eventService.getLatestEventsByLocation(country,
-                limit);
-
-        return EventMapper.toDTOs(latestEventsByLocation);
-
-    }
-
-
-
-
-
-
 }
 
 
