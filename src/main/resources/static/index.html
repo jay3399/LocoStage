@@ -65,6 +65,37 @@
 </div>
 
 <script>
+
+  async function processData(data) {
+
+    let eventDiv = document.getElementById('events');
+    for (let event of data.eventDTOS) {
+      let card = document.createElement('div');
+      card.className = 'card';
+      card.textContent = `${event.artistName} - ${event.venueName} - ${event.date}`;
+      eventDiv.appendChild(card);
+    }
+
+    let festivalDiv = document.getElementById('festivals');
+    for (let festival of data.festivalDTOS) {
+      let card = document.createElement('div');
+      card.className = 'card';
+      card.textContent = `${festival.name} - ${festival.venueName} - ${festival.startDate}`;
+      festivalDiv.appendChild(card);
+    }
+
+    // Sort ArtistDTO by name
+    data.artistDTOS.sort((a, b) => a.name.localeCompare(b.name));
+
+    let artistDiv = document.getElementById('artists');
+    for (let artist of data.artistDTOS) {
+      let card = document.createElement('div');
+      card.className = 'card';
+      card.textContent = artist.name;
+      artistDiv.appendChild(card);
+    }
+  }
+
   async function loadMainPageData() {
     try {
 
@@ -84,64 +115,42 @@
             )
           }
       );
-
       let data = await response.json();
+      processData(data);
 
-      let eventDiv = document.getElementById('events');
-      for (let event of data.eventDTOS) {
-        let card = document.createElement('div');
-        card.className = 'card';
-        card.textContent = `${event.artistName} - ${event.venueName} - ${event.date}`;
-        eventDiv.appendChild(card);
-      }
-
-      let festivalDiv = document.getElementById('festivals');
-      for (let festival of data.festivalDTOS) {
-        let card = document.createElement('div');
-        card.className = 'card';
-        card.textContent = `${festival.name} - ${festival.venueName} - ${festival.startDate}`;
-        festivalDiv.appendChild(card);
-      }
-
-      // Sort ArtistDTO by name
-      data.artistDTOS.sort((a, b) => a.name.localeCompare(b.name));
-
-      let artistDiv = document.getElementById('artists');
-      for (let artist of data.artistDTOS) {
-        let card = document.createElement('div');
-        card.className = 'card';
-        card.textContent = artist.name;
-        artistDiv.appendChild(card);
-      }
     } catch (err) {
       if (err.code && err.code === 1) {
-        showLocationPermissionPopup();
-      } else {
-        console.log("Error fetching main page data:", err);
+        let response = await fetch("/api/main/reject", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        let data = await response.json();
+        processData(data);
       }
     }
   }
 
 
 
-
-  function showLocationPermissionPopup() {
-    const popup = document.getElementById("location-permission-popup");
-    popup.classList.remove("hidden");
-
-    const button = document.getElementById("request-location");
-    button.addEventListener("click", async function() {
-      try {
-        const position = await getLocation();
-        popup.classList.add("hidden");
-        await loadMainPageData(); // Reload data after gaining permission
-      } catch (err) {
-        if (err.code && err.code === 1) {
-          console.log("User still denied location access.");
-        }
-      }
-    });
-  }
+  // function showLocationPermissionPopup() {
+  //   const popup = document.getElementById("location-permission-popup");
+  //   popup.classList.remove("hidden");
+  //
+  //   const button = document.getElementById("request-location");
+  //   button.addEventListener("click", async function() {
+  //     try {
+  //       const position = await getLocation();
+  //       popup.classList.add("hidden");
+  //       await loadMainPageData(); // Reload data after gaining permission
+  //     } catch (err) {
+  //       if (err.code && err.code === 1) {
+  //         console.log("User still denied location access.");
+  //       }
+  //     }
+  //   });
+  // }
 
 
   async function getLocation() {
