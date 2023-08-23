@@ -6,17 +6,18 @@ import com.example.locostage.application.dto.FestivalDTO;
 import com.example.locostage.application.service.ArtistApplicationService;
 import com.example.locostage.application.service.EventApplicationService;
 import com.example.locostage.application.service.FestivalApplicationService;
-import com.example.locostage.domain.model.Artist;
-import com.example.locostage.ui.request.MainPageResponse;
+import com.example.locostage.infrastructure.external.LocationService;
+import com.example.locostage.ui.request.LocationRequest;
+import com.example.locostage.ui.response.MainPageResponse;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,20 +45,22 @@ public class MainController {
         this.executor = executor;
     }
 
-    @GetMapping
-    public ResponseEntity<MainPageResponse> getMainPageData(String country , Userlocation userLocation)
-            throws ExecutionException, InterruptedException, TimeoutException {
+    @PostMapping
+    public ResponseEntity<MainPageResponse> getMainPageData(String country , @RequestBody
+            LocationRequest locationRequest)
+            throws ExecutionException, InterruptedException, TimeoutException, IOException, URISyntaxException {
 
 //        PageRequest pageable = PageRequest.of(0, 5);
 
 
-        if (country == null && userLocation != null) {
+        if (country == null && locationRequest != null) {
 
-            country = convertLocationToCountry(userLocation);
+            country = LocationService.getCountryName(locationRequest);
 
         }
 
         final String effectiveCountry = country;
+        System.out.println("effectiveCountry = " + effectiveCountry);
 
 
         CompletableFuture<List<EventDTO>> eventFuture = CompletableFuture.supplyAsync(

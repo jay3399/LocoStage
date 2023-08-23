@@ -1,4 +1,4 @@
-package com.example.locostage.ui.request;
+package com.example.locostage.ui.response;
 
 import com.example.locostage.application.dto.ArtistDTO;
 import com.example.locostage.application.dto.EventDTO;

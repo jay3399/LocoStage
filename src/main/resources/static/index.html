@@ -5,61 +5,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Main Page</title>
+  <style>
+    .scrolling-wrapper {
+      overflow-x: scroll;
+      overflow-y: hidden;
+      white-space: nowrap;
+    }
+
+    .card {
+      display: inline-block;
+      width: 200px;
+      margin: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      background-color: #fff;
+      padding: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #location-permission-popup {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #f1f1f1;
+      padding: 1em;
+      text-align: center;
+      border-top: 1px solid #ccc;
+    }
+  </style>
 </head>
 
 <body>
 
+<div id="location-permission-popup" class="hidden">
+  <p>Please allow location access for a better experience.</p>
+  <button id="request-location">Allow</button>
+</div>
+
 <!-- Displaying EventDTO -->
 <div id="event-list">
   <h3>Events</h3>
-  <ul id="events"></ul>
+  <div class="scrolling-wrapper" id="events"></div>
 </div>
 
 <!-- Displaying FestivalDTO -->
 <div id="festival-list">
   <h3>Festivals</h3>
-  <ul id="festivals"></ul>
+  <div class="scrolling-wrapper" id="festivals"></div>
 </div>
 
 <!-- Displaying ArtistDTO -->
 <div id="artist-list">
   <h3>Artists</h3>
-  <ul id="artists"></ul>
+  <div class="scrolling-wrapper" id="artists"></div>
 </div>
 
 <script>
   async function loadMainPageData() {
     try {
-      let response = await fetch("/api/main");
-      let data = await response.json();
-      console.log(data);
 
-      let eventUl = document.getElementById('events');
+      const position = await getLocation();
+      let latitude = position.coords.latitude;
+      let longitude = position.coords.longitude;
+
+
+      let response = await fetch("/api/main" ,
+          {
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(
+                {latitude , longitude}
+            )
+          }
+      );
+
+      let data = await response.json();
+
+      let eventDiv = document.getElementById('events');
       for (let event of data.eventDTOS) {
-        let li = document.createElement('li');
-        li.textContent = `${event.artistName} - ${event.venueName} - ${event.date}`;
-        eventUl.appendChild(li);
+        let card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = `${event.artistName} - ${event.venueName} - ${event.date}`;
+        eventDiv.appendChild(card);
       }
 
-      let festivalUl = document.getElementById('festivals');
+      let festivalDiv = document.getElementById('festivals');
       for (let festival of data.festivalDTOS) {
-        let li = document.createElement('li');
-        li.textContent = `${festival.name} - ${festival.venueName} - ${festival.startDate}`;
-        festivalUl.appendChild(li);
+        let card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = `${festival.name} - ${festival.venueName} - ${festival.startDate}`;
+        festivalDiv.appendChild(card);
       }
 
       // Sort ArtistDTO by name
       data.artistDTOS.sort((a, b) => a.name.localeCompare(b.name));
 
-      let artistUl = document.getElementById('artists');
+      let artistDiv = document.getElementById('artists');
       for (let artist of data.artistDTOS) {
-        let li = document.createElement('li');
-        li.textContent = artist.name;
-        artistUl.appendChild(li);
+        let card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = artist.name;
+        artistDiv.appendChild(card);
       }
     } catch (err) {
-      console.error("Error fetching main page data:", err);
+      if (err.code && err.code === 1) {
+        showLocationPermissionPopup();
+      } else {
+        console.log("Error fetching main page data:", err);
+      }
     }
+  }
+
+
+
+
+  function showLocationPermissionPopup() {
+    const popup = document.getElementById("location-permission-popup");
+    popup.classList.remove("hidden");
+
+    const button = document.getElementById("request-location");
+    button.addEventListener("click", async function() {
+      try {
+        const position = await getLocation();
+        popup.classList.add("hidden");
+        await loadMainPageData(); // Reload data after gaining permission
+      } catch (err) {
+        if (err.code && err.code === 1) {
+          console.log("User still denied location access.");
+        }
+      }
+    });
+  }
+
+
+  async function getLocation() {
+    return new Promise((
+        resolve , reject
+    ) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    })
   }
 
   // Load data on page load
