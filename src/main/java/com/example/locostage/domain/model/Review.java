@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-public class Review {
+public class Review extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,40 +22,11 @@ public class Review {
     @JoinColumn(name = "userId")
     private User user;
 
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "festivalEventId")
-//    private FestivalEvent festivalEvent;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "soleEventId")
-//    private SoleEvent soleEvent;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eventId")
     private Event event;
 
-
-
-
-//    public void setUser(User user) {
-//        this.user = user;
-//        user.getReviews().add(this);
-//    }
-//
-//    public void setFestivalEvent(FestivalEvent festivalEvent) {
-//        this.festivalEvent = festivalEvent;
-//        festivalEvent.getReviews().add(this);
-//    }
-//
-//    public void setSoleEvent(SoleEvent soleEvent) {
-//        this.soleEvent = soleEvent;
-//        soleEvent.getReviews().add(this);
-//    }
-
     private Integer rating;
     private String comment;
-    private LocalDateTime createdDate;
 
 }

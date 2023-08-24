@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -19,9 +21,16 @@ public class Venue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long venueId;
+
+    @NotEmpty
+    @Size(max = 100)
     private String name;
+
+    @Size(max = 255)
     private String address;
+    @Size(max = 100)
     private String website;
+    @Size(max = 20)
     private String phoneNumber;
     private String location;
     private String country;

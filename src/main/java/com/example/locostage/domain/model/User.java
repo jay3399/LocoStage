@@ -1,5 +1,6 @@
 package com.example.locostage.domain.model;
 
+import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +23,6 @@ public class User {
         private String email;
         private String firstName = "";
         private String lastName = "";
-        private LocalDateTime createdDate;
-        private LocalDateTime updatedDate;
         private LocalDateTime lastLoginDate;
         private String lastLoginDevice;
         private String authenticationToken;

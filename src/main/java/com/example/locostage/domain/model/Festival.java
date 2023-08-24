@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,12 @@ public class Festival {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long festivalId;
+
+    @NotEmpty
+    @Size(max = 100)
     private String name;
+
+    @Size(max = 400)
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
