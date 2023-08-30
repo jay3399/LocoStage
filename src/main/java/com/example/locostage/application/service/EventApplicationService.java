@@ -1,6 +1,9 @@
 package com.example.locostage.application.service;
 
+import com.example.locostage.application.dto.EventDetailed;
+import com.example.locostage.application.dto.EventDetailedDTO;
 import com.example.locostage.application.dto.EventListDTO;
+import com.example.locostage.application.dto.mapper.EventDetailedMapper;
 import com.example.locostage.application.dto.mapper.EventListMapper;
 import com.example.locostage.domain.service.EventService;
 import java.util.List;
@@ -20,6 +23,14 @@ public class EventApplicationService {
 
         return EventListMapper.toDTOs(eventService.getLatestEventsByLocationV2(country));
 
+    }
+
+    @Transactional
+
+    public EventDetailedDTO getEventDetailed(Long eventID) {
+        EventDetailedDTO eventDetailedDTO = EventDetailedMapper.toDTO(
+                eventService.getEvent(eventID));
+        return eventDetailedDTO;
     }
 }
 
