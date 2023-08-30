@@ -1,12 +1,10 @@
 package com.example.locostage.application.service;
 
-import com.example.locostage.application.dto.EventDTO;
-import com.example.locostage.application.dto.mapper.EventMapper;
-import com.example.locostage.domain.model.Event;
+import com.example.locostage.application.dto.EventListDTO;
+import com.example.locostage.application.dto.mapper.EventListMapper;
 import com.example.locostage.domain.service.EventService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +16,9 @@ public class EventApplicationService {
 
 
     @Transactional
-    public List<EventDTO> getLatestEventsV4(String country ){
+    public List<EventListDTO> getLatestEventsV4(String country ){
 
-        return EventMapper.toDTOs(eventService.getLatestEventsByLocationV2(country));
+        return EventListMapper.toDTOs(eventService.getLatestEventsByLocationV2(country));
 
     }
 }

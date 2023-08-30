@@ -69,7 +69,7 @@
   async function processData(data) {
 
     let eventDiv = document.getElementById('events');
-    for (let event of data.eventDTOS) {
+    for (let event of data.eventListDTOS) {
       let card = document.createElement('div');
       card.className = 'card';
       card.textContent = `${event.artistName} - ${event.venueName} - ${event.date}`;

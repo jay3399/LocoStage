@@ -1,36 +1,28 @@
 package com.example.locostage.domain.service;
 
+import com.example.locostage.application.dto.EventDetailed;
 import com.example.locostage.domain.model.Event;
+import com.example.locostage.domain.model.EventFestival;
+import com.example.locostage.domain.model.Festival;
+import com.example.locostage.domain.model.Venue;
 import com.example.locostage.domain.repository.EventRepository;
+import com.example.locostage.domain.repository.FestivalRepository;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class EventService {
-    private final EventRepository repository;
-
-//    public List<Event> getLatestEvents(int limit) {
-//        return repository.findAll().stream().sorted(Comparator.comparing(Event::getDate).reversed())
-//                .limit(limit).collect(
-//                        Collectors.toList(
-//                        ));
-//    }
-
-//
-//    public List<FestivalEvent> getLatestEventsByLocation(String country, int limit) {
-//
-//        PageRequest pageable = PageRequest.of(0, limit);
-//
-//        return repository.findByVenueCountryOrderByDateDesc(country, pageable);
-//    }
+    private final EventRepository eventRepository;
 
     public List<Event> getLatestEventsByLocationV2(String country ) {
 
-        List<Event> allEventsByCountry = repository.findAllEventsByCountry(country);
+        List<Event> allEventsByCountry = eventRepository.findAllEventsByCountry(country);
 
         for (Event event : allEventsByCountry) {
             System.out.println("event.getEventName( = " + event.getEventName());
@@ -38,12 +30,27 @@ public class EventService {
 
         return allEventsByCountry;
 
-
-
     }
 
+    public EventDetailed getEvent(Long eventID) {
+        Event event = eventRepository.findById(eventID).orElseThrow(EntityNotFoundException::new);
+        Venue venue = event.getVenue();
 
+        Festival festival = null;
+        EventFestival eventFestival = null;
 
+        if (event instanceof EventFestival) {
+            eventFestival = (EventFestival) event;
+            festival = eventFestival.getFestival();
+        }
+
+        return EventDetailed.builder()
+                .event(event)
+                .EventFestival(eventFestival)
+                .festival(festival)
+                .venue(venue)
+                .build();
+    }
 
 
 }

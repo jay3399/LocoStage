@@ -1,7 +1,7 @@
 package com.example.locostage.ui.controller;
 
 import com.example.locostage.application.dto.ArtistDTO;
-import com.example.locostage.application.dto.EventDTO;
+import com.example.locostage.application.dto.EventListDTO;
 import com.example.locostage.application.dto.FestivalDTO;
 import com.example.locostage.application.service.ArtistApplicationService;
 import com.example.locostage.application.service.EventApplicationService;
@@ -64,7 +64,7 @@ public class MainController {
         System.out.println("effectiveCountry = " + effectiveCountry);
 
 
-        CompletableFuture<List<EventDTO>> eventFuture = CompletableFuture.supplyAsync(
+        CompletableFuture<List<EventListDTO>> eventFuture = CompletableFuture.supplyAsync(
                 () -> eventApplicationService.getLatestEventsV4("US"), executor);
 
         CompletableFuture<List<FestivalDTO>> festivalFuture = CompletableFuture.supplyAsync(
@@ -77,25 +77,25 @@ public class MainController {
 
         CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(eventFuture, festivalFuture , artistFuture);
 
-        List<EventDTO> eventDTOS;
+        List<EventListDTO> eventListDTOS;
         List<FestivalDTO> festivalDTOS;
         List<ArtistDTO> artistDTOS;
 
 
         try {
             combinedFuture.join();
-            eventDTOS = eventFuture.get(5, TimeUnit.SECONDS);
+            eventListDTOS = eventFuture.get(5, TimeUnit.SECONDS);
             festivalDTOS = festivalFuture.get(5, TimeUnit.SECONDS);
             artistDTOS = artistFuture.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw e;
         }
 
-        for (EventDTO eventDTO : eventDTOS) {
-            System.out.println("eventDTO.getArtistName( = " + eventDTO.getArtistName());
+        for (EventListDTO eventListDTO : eventListDTOS) {
+            System.out.println("eventDTO.getArtistName( = " + eventListDTO.getArtistName());
         }
 
-        MainPageResponse mainPageResponse = new MainPageResponse(eventDTOS, festivalDTOS, artistDTOS);
+        MainPageResponse mainPageResponse = new MainPageResponse(eventListDTOS, festivalDTOS, artistDTOS);
 
 
         return ResponseEntity.ok(mainPageResponse);

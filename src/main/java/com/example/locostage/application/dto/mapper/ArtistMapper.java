@@ -1,9 +1,7 @@
 package com.example.locostage.application.dto.mapper;
 
 import com.example.locostage.application.dto.ArtistDTO;
-import com.example.locostage.application.dto.EventDTO;
 import com.example.locostage.domain.model.Artist;
-import com.example.locostage.domain.model.Event;
 import java.util.List;
 import java.util.stream.Collectors;
 
