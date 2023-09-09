@@ -7,5 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, FestivalRepository> {
 
+    User findByEmail(String email);
+
+    User findByRefreshToken(String RefreshToken);
+
 
 }

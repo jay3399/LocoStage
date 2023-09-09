@@ -1,4 +1,4 @@
-package com.example.locostage.ui.response;
+package com.example.locostage.application.ui.response;
 
 public class ErrorResponse {
 

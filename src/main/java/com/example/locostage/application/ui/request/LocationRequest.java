@@ -1,4 +1,4 @@
-package com.example.locostage.ui.request;
+package com.example.locostage.application.ui.request;
 
 import lombok.Getter;
 import lombok.Setter;

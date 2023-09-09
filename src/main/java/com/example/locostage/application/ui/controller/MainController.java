@@ -1,4 +1,4 @@
-package com.example.locostage.ui.controller;
+package com.example.locostage.application.ui.controller;
 
 import com.example.locostage.application.dto.ArtistDTO;
 import com.example.locostage.application.dto.EventListDTO;
@@ -6,9 +6,9 @@ import com.example.locostage.application.dto.FestivalDTO;
 import com.example.locostage.application.service.ArtistApplicationService;
 import com.example.locostage.application.service.EventApplicationService;
 import com.example.locostage.application.service.FestivalApplicationService;
+import com.example.locostage.application.ui.response.MainPageResponse;
 import com.example.locostage.infrastructure.external.LocationService;
-import com.example.locostage.ui.request.LocationRequest;
-import com.example.locostage.ui.response.MainPageResponse;
+import com.example.locostage.application.ui.request.LocationRequest;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;

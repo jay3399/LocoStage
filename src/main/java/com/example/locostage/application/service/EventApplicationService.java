@@ -26,7 +26,6 @@ public class EventApplicationService {
     }
 
     @Transactional
-
     public EventDetailedDTO getEventDetailed(Long eventID) {
         EventDetailedDTO eventDetailedDTO = EventDetailedMapper.toDTO(
                 eventService.getEvent(eventID));

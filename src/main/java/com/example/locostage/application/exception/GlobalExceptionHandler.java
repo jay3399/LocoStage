@@ -1,6 +1,6 @@
 package com.example.locostage.application.exception;
 
-import com.example.locostage.ui.response.ErrorResponse;
+import com.example.locostage.application.ui.response.ErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;

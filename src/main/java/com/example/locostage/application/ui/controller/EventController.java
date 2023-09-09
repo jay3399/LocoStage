@@ -1,4 +1,4 @@
-package com.example.locostage.ui.controller;
+package com.example.locostage.application.ui.controller;
 
 import com.example.locostage.application.service.EventApplicationService;
 import lombok.RequiredArgsConstructor;

@@ -1,18 +1,11 @@
 package com.example.locostage.infrastructure.external;
 
-import com.example.locostage.ui.request.LocationRequest;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.example.locostage.application.ui.request.LocationRequest;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
 import org.springframework.web.reactive.function.client.WebClient;
 
 
