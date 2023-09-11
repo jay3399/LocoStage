@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,15 @@ public class UserApplicationService {
 
     private final UserService userService;
     private final EmailService emailService;
+
+    private final RedisTemplate redisTemplate;
+
     private final JwtUtil jwtUtil;
 
 
     public Map<String ,String> registerOrLogin(String email , String clientDeviceInfo) {
+
+        // 여기서한번 -> 이메일 인증할떄 다시한번 -> 데이터접근두번 . 캐시로 막는다 .
 
         User user = userService.findByEmail(email);
 
@@ -37,6 +43,8 @@ public class UserApplicationService {
             emailService.sendVerificationEmail(email, token);
             tokens.put("message", "email verification required");
         } else {
+
+            redisTemplate.opsForValue().set("user:" + email, user);
 
             String accessToken = jwtUtil.generateToken(user, "loginCheck");
             String refreshToken = jwtUtil.generateRefreshToken(user);

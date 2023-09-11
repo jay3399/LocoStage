@@ -2,7 +2,7 @@ package com.example.locostage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import org.springframework.scheduling.annotation.EnableAsync;
 
 // 이메일이용 로그인서비스구현
 
@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
+@EnableAsync
 public class LocoStageApplication {
 
     public static void main(String[] args) {

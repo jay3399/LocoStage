@@ -7,10 +7,14 @@ import com.example.locostage.domain.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +27,7 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-
+    @Async
     public void sendVerificationEmail(String email, String token) {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -55,6 +59,8 @@ public class EmailService {
 
         Claims cliams;
 
+        User user;
+
         try {
             cliams = jwtUtil.validateToken(token);
         } catch (Exception e) {
@@ -69,7 +75,12 @@ public class EmailService {
             return null;
         }
 
-        User user = userRepository.findByEmail(email);
+         user = (User) redisTemplate.opsForValue().getAndDelete("user" + email);
+
+        if (user == null) {
+             user = userRepository.findByEmail(email);
+        }
+
 
         if (user == null) {
             user = new User();
@@ -86,3 +97,8 @@ public class EmailService {
 
 
 }
+
+
+
+
+
