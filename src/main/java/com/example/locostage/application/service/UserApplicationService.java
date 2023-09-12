@@ -31,11 +31,13 @@ public class UserApplicationService {
 
         // 여기서한번 -> 이메일 인증할떄 다시한번 -> 데이터접근두번 . 캐시로 막는다 .
 
-        User user = userService.findByEmail(email);
+        User user = userService.findByEmail(email).orElse(User.create(email, true));
 
         boolean reauthenticate = isReauthenticate(user ,clientDeviceInfo);
 
         Map<String, String> tokens = new HashMap<>();
+
+        redisTemplate.opsForValue().set("user:" + email, user);
 
 
         if (reauthenticate) {
@@ -43,8 +45,6 @@ public class UserApplicationService {
             emailService.sendVerificationEmail(email, token);
             tokens.put("message", "email verification required");
         } else {
-
-            redisTemplate.opsForValue().set("user:" + email, user);
 
             String accessToken = jwtUtil.generateToken(user, "loginCheck");
             String refreshToken = jwtUtil.generateRefreshToken(user);
@@ -61,25 +61,39 @@ public class UserApplicationService {
 
     private boolean isReauthenticate(User user , String clientDeviceInfo) {
 
-        if (clientDeviceInfo != null && clientDeviceInfo.equals(user.getDeviceInformation())) {
+        if (user.isNewUser()) {
             return true;
         }
 
-        if (user == null) {
+        if (isNewDevice(user, clientDeviceInfo)) {
             return true;
         }
 
+        if (isLongtime(user)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean isLongtime(User user) {
         if (user.getLastLoginDate() != null) {
             long diff = new Date().getTime() - user.getLastLoginDate().getTime();
 
             long diffHours = diff / (60 * 60 * 1000);
 
-            if (diffHours < 24) {
-                return false;
+            if (diffHours > 24) {
+                return true;
             }
         }
+        return false;
+    }
 
-        return true;
+    private static boolean isNewDevice(User user, String clientDeviceInfo) {
+        if (clientDeviceInfo != null && clientDeviceInfo.equals(user.getDeviceInformation())) {
+            return true;
+        }
+        return false;
     }
 
     public User findByRefreshToken(String refreshToken) {

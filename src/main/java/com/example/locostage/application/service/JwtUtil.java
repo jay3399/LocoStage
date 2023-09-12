@@ -1,8 +1,10 @@
 package com.example.locostage.application.service;
 
+import com.example.locostage.application.exception.custom.JwtTokenException;
 import com.example.locostage.domain.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,13 +28,42 @@ public class JwtUtil {
 
 
     public  String generateToken(User user, String purpose) {
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                .claim("userId" , user.getUserId())
-                .claim("purpose", purpose)
-                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
+
+        try {
+            return Jwts.builder()
+                    .setSubject(user.getEmail())
+                    .claim("userId", user.getUserId())
+                    .claim("purpose", purpose)
+                    .setExpiration(
+                            new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)))
+                    .signWith(SignatureAlgorithm.HS256, secret)
+                    .compact();
+
+        } catch (JwtException e) {
+
+            throw new JwtTokenException("Login JWT 생성오류", e);
+
+        }
+    }
+
+    public String generateToken(String email, String purpose) {
+
+        try {
+
+            return Jwts.builder()
+                    .setSubject(email)
+                    .claim("purpose", purpose)
+                    .setExpiration(
+                            new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)))
+                    .signWith(SignatureAlgorithm.HS256, secret)
+                    .compact();
+
+        } catch (JwtException e) {
+
+            throw new JwtTokenException("Email JWT 생성오류", e);
+
+        }
+
     }
 
     public String generateRefreshToken(User user) {
@@ -45,20 +76,22 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateToken(String email, String purpose) {
-        return Jwts.builder()
-                .setSubject(email)
-                .claim("purpose", purpose)
-                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
+
 
     public  Claims validateToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
+
+        try {
+
+            return Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+        } catch (JwtException e) {
+
+            throw new JwtTokenException("토큰 파싱오류", e);
+
+        }
     }
 
     public Boolean isTokenExpired(HttpServletRequest request) {

@@ -46,6 +46,8 @@ public class User extends BaseEntity {
 
         private String refreshToken;
 
+        private boolean isNewUser;
+
 
         @OneToMany(mappedBy = "user")
         private List<Review> reviews = new ArrayList<>();
@@ -55,6 +57,14 @@ public class User extends BaseEntity {
 
         @OneToMany(mappedBy = "user")
         private List<UserArtist> userArtists = new ArrayList<>();
+
+
+        public static User create(String email , boolean isNew) {
+                User user = new User();
+                user.email = email;
+                user.isNewUser = true;
+                return user;
+        }
 
 
 

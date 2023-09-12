@@ -1,16 +1,14 @@
 package com.example.locostage.domain.service;
 
 
+import com.example.locostage.application.exception.custom.EmailException;
 import com.example.locostage.application.service.JwtUtil;
 import com.example.locostage.domain.model.User;
 import com.example.locostage.domain.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -34,9 +32,7 @@ public class EmailService {
 
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
 
-
         try {
-
             helper.setTo(email);
             helper.setSubject("Email Verification");
 
@@ -49,7 +45,7 @@ public class EmailService {
 
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new EmailException("이메일 전송에 실패했습니다", e);
         }
 
 
@@ -57,43 +53,24 @@ public class EmailService {
 
     public String verifyEmail(String token) {
 
-        Claims cliams;
+        String email = jwtUtil.validateToken(token).getSubject();
 
-        User user;
+        User user = (User) redisTemplate.opsForValue().getAndDelete("user" + email);
 
-        try {
-            cliams = jwtUtil.validateToken(token);
-        } catch (Exception e) {
-            return null;
-        }
-
-        String email = cliams.getSubject();
-
-        String storedEmail = (String) redisTemplate.opsForValue().get(token);
+        String storedEmail = (String) redisTemplate.opsForValue().getAndDelete(token);
 
         if (storedEmail == null || !email.equals(storedEmail)) {
             return null;
         }
 
-         user = (User) redisTemplate.opsForValue().getAndDelete("user" + email);
-
-        if (user == null) {
-             user = userRepository.findByEmail(email);
+        if (user.isNewUser()) {
+            user.setNewUser(false);
+            userRepository.save(user);
         }
 
-
-        if (user == null) {
-            user = new User();
-            user.setEmail(email);
-        }
-
-        userRepository.save(user);
-
-        redisTemplate.delete(token);
 
         return jwtUtil.generateToken(user , "loginCheck" );
     }
-
 
 
 }

@@ -24,10 +24,6 @@ public class EventService {
 
         List<Event> allEventsByCountry = eventRepository.findAllEventsByCountry(country);
 
-        for (Event event : allEventsByCountry) {
-            System.out.println("event.getEventName( = " + event.getEventName());
-        }
-
         return allEventsByCountry;
 
     }
