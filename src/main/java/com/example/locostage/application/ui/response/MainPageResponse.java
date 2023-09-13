@@ -16,7 +16,6 @@ public class MainPageResponse {
 
     private List<EventListDTO> eventListDTOS;
     private List<FestivalDTO> festivalDTOS;
-
     private List<ArtistDTO> artistDTOS;
 
 

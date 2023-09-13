@@ -3,15 +3,12 @@ package com.example.locostage.application.service;
 import com.example.locostage.domain.model.User;
 import com.example.locostage.domain.service.EmailService;
 import com.example.locostage.domain.service.UserService;
-import io.jsonwebtoken.Claims;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,8 +39,18 @@ public class UserApplicationService {
 
         if (reauthenticate) {
             String token = jwtUtil.generateToken(email, "emailCheck");
+
+            redisTemplate.opsForValue().set(token, email);
+
             emailService.sendVerificationEmail(email, token);
-            tokens.put("message", "email verification required");
+
+            if (user.isNewUser()) {
+                tokens.put("message", "환영합니다, 가입 인증메일을 보냈습니다 확인해주세요.");
+            } else {
+                tokens.put("message", "로그인 인증 메일을 보냈습니다 확인해주세요.");
+            }
+
+
         } else {
 
             String accessToken = jwtUtil.generateToken(user, "loginCheck");
@@ -52,7 +59,7 @@ public class UserApplicationService {
             user.setRefreshToken(refreshToken);
             userService.save(user);
 
-            tokens.put("accessToken", accessToken);
+            tokens.put("loginToken", accessToken);
             tokens.put("refreshToken", refreshToken);
         }
         return tokens;

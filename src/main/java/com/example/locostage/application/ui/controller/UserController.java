@@ -2,10 +2,12 @@ package com.example.locostage.application.ui.controller;
 
 import com.example.locostage.application.service.JwtUtil;
 import com.example.locostage.application.service.UserApplicationService;
+import com.example.locostage.application.ui.request.UserRequest;
 import com.example.locostage.domain.model.User;
 import com.example.locostage.domain.model.UserArtist;
 import com.example.locostage.domain.service.EmailService;
 import com.example.locostage.domain.service.UserService;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -37,21 +39,33 @@ public class UserController {
     @PostMapping("/registerOrLogin")
     public ResponseEntity<Map<String, String>> registerOrLogin(
             @RequestBody Map<String, String> payload,
+//            @Valid @RequestBody UserRequest userRequest
             @RequestHeader("Device-Info") String clientDeviceInfo) {
+
+        System.out.println("clientDeviceInfo = " + clientDeviceInfo);
 
         String email = payload.get("email");
         Map<String, String> tokens = userService.registerOrLogin(email, clientDeviceInfo);
         return ResponseEntity.ok(tokens);
 
-
-
     }
 
     @GetMapping("/verifyEmail")
-    public String verifyEmail(@RequestParam String token) {
-        return emailService.verifyEmail(token);
-    }
+    public ResponseEntity<String> verifyEmail(@RequestParam String token) {
+        String accessToken = emailService.verifyEmail(token);
 
+        if (accessToken != null) {
+            String response = "<html><script>"
+                    + "localStorage.setItem('loginToken', '" + accessToken + "');"
+                    + "alert('인증이 완료되었습니다.');"
+                    + "setTimeout(function() { window.location.href = '/mainPage'; }, 5000);"
+                    + "</script></html>";
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증실패");
+        }
+
+    }
 
     @PostMapping("/refreshToken")
     public ResponseEntity<Map<String, String>> refreshToken(@RequestParam String refreshToken) {

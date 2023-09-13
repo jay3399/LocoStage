@@ -22,6 +22,8 @@
       padding: 20px;
     }
 
+
+
     .hidden {
       display: none;
     }
@@ -36,10 +38,39 @@
       text-align: center;
       border-top: 1px solid #ccc;
     }
+
+    #emailPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+
+
   </style>
 </head>
 
 <body>
+
+<div id="login-section" style="text-align: right; padding: 1em;">
+  <button id="loginBtn">로그인/가입하기</button>
+</div>
+
+<!-- Add this for the email popup -->
+<div id="emailPopup" class="hidden">
+  <h2>이메일로 로그인/가입</h2>
+  <input id="emailInput" type="email" placeholder="이메일을 입력하세요">
+  <button id="submitBtn">제출하기</button>
+  <p id="message"></p>
+  <button id="verifyBtn" class="hidden">인증 완료</button>
+  <button id="closeBtn">닫기</button>
+</div>
+
 
 <div id="location-permission-popup" class="hidden">
   <p>Please allow location access for a better experience.</p>
@@ -132,27 +163,6 @@
     }
   }
 
-
-
-  // function showLocationPermissionPopup() {
-  //   const popup = document.getElementById("location-permission-popup");
-  //   popup.classList.remove("hidden");
-  //
-  //   const button = document.getElementById("request-location");
-  //   button.addEventListener("click", async function() {
-  //     try {
-  //       const position = await getLocation();
-  //       popup.classList.add("hidden");
-  //       await loadMainPageData(); // Reload data after gaining permission
-  //     } catch (err) {
-  //       if (err.code && err.code === 1) {
-  //         console.log("User still denied location access.");
-  //       }
-  //     }
-  //   });
-  // }
-
-
   async function getLocation() {
     return new Promise((
         resolve , reject
@@ -163,6 +173,67 @@
 
   // Load data on page load
   window.onload = loadMainPageData;
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const loginBtn = document.getElementById("loginBtn");
+    const emailPopup = document.getElementById("emailPopup");
+    const emailInput = document.getElementById("emailInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+    const verifyBtn = document.getElementById('verifyBtn');
+    const closeBtn = document.getElementById("closeBtn");
+
+    loginBtn.addEventListener("click", () => {
+      emailPopup.classList.remove("hidden");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      emailPopup.classList.add("hidden");
+    });
+
+    verifyBtn.addEventListener("click", () => {
+      const accessToken = localStorage.getItem('loginToken');
+
+      if (accessToken) {
+        window.location.href = "/mainPage";
+      } else {
+        alert("인증이 아직 완료되지 않았습니다. 이메일을 확인해주세요.");
+      }
+    });
+
+    submitBtn.addEventListener("click", async () => {
+      const email = emailInput.value;
+
+      const deviceInfo = `Browser: ${navigator.userAgent} , PlatForm: ${navigator.platform}`;
+
+      try {
+        const response = await fetch("/registerOrLogin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Device-Info": deviceInfo
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+        const { accessToken, refreshToken, message: serverMessage } = data;
+
+        if (accessToken && refreshToken) {
+          localStorage.setItem('loginToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          message.textContent = "로그인 성공!";
+          window.location.href = "/mainPage";
+        } else if (serverMessage) {
+          message.textContent = serverMessage;
+        }
+
+      } catch (error) {
+        console.error(`An error occurred: ${error}`);
+      }
+    });
+  });
 </script>
 
 </body>

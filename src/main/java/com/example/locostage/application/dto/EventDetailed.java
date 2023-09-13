@@ -18,7 +18,8 @@ public class EventDetailed {
     private EventFestival EventFestival;
     private Venue venue;
 
-    public EventDetailed(Festival festival, EventFestival EventFestival, Venue venue) {
+    public EventDetailed(Event event , Festival festival, EventFestival EventFestival, Venue venue) {
+        this.event = event;
         this.festival = festival;
         this.EventFestival = EventFestival;
         this.venue = venue;

@@ -5,7 +5,6 @@ import com.example.locostage.application.exception.custom.EmailException;
 import com.example.locostage.application.service.JwtUtil;
 import com.example.locostage.domain.model.User;
 import com.example.locostage.domain.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,10 @@ public class EmailService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final RedisTemplate redisTemplate;
-
     private final JavaMailSender javaMailSender;
+
+    private static final String MAIL_ADDRESS = "josw90@naver.com";
+
 
     @Async
     public void sendVerificationEmail(String email, String token) {
@@ -34,11 +35,13 @@ public class EmailService {
 
         try {
             helper.setTo(email);
+            helper.setFrom("joswxx@gmail.com");
             helper.setSubject("Email Verification");
 
             String htmlText = "<h3>Click the button below to verify your email:</h3>" +
-                    "<a href='http://your-app.com/verifyEmail?token=" + token + "'>" +
-                    "<button style='padding: 10px; background-color: blue; color: white;'>Verify Email</button>" +
+                    "<a href='http://localhost:8080/verifyEmail?token=" + token + "'>" +
+                    "<button style='padding: 10px; background-color: blue; color: white;'>Verify Email</button>"
+                    +
                     "</a>";
 
             helper.setText(htmlText, true);
@@ -55,9 +58,13 @@ public class EmailService {
 
         String email = jwtUtil.validateToken(token).getSubject();
 
-        User user = (User) redisTemplate.opsForValue().getAndDelete("user" + email);
+        User user = (User) redisTemplate.opsForValue().get("user:" + email);
 
-        String storedEmail = (String) redisTemplate.opsForValue().getAndDelete(token);
+        System.out.println("user = " + user);
+
+        String storedEmail = (String) redisTemplate.opsForValue().get(token);
+
+        System.out.println("storedEmail = " + storedEmail);
 
         if (storedEmail == null || !email.equals(storedEmail)) {
             return null;
@@ -68,8 +75,7 @@ public class EmailService {
             userRepository.save(user);
         }
 
-
-        return jwtUtil.generateToken(user , "loginCheck" );
+        return jwtUtil.generateToken(user, "loginCheck");
     }
 
 

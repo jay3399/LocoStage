@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Artist extends BaseEntity{
+public class Artist{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
