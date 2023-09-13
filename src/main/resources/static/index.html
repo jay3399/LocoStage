@@ -217,6 +217,14 @@
           body: JSON.stringify({ email }),
         });
 
+        if (response.status === 400) {
+          const data = await response.json();
+          const {error} = data;
+          message.textContent = error;
+          return;
+        }
+
+
         const data = await response.json();
         const { accessToken, refreshToken, message: serverMessage } = data;
 

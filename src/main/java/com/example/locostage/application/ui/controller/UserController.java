@@ -38,13 +38,12 @@ public class UserController {
 
     @PostMapping("/registerOrLogin")
     public ResponseEntity<Map<String, String>> registerOrLogin(
-            @RequestBody Map<String, String> payload,
-//            @Valid @RequestBody UserRequest userRequest
+           @Valid@RequestBody UserRequest userRequest ,
             @RequestHeader("Device-Info") String clientDeviceInfo) {
 
         System.out.println("clientDeviceInfo = " + clientDeviceInfo);
 
-        String email = payload.get("email");
+        String email = userRequest.getEmail();
         Map<String, String> tokens = userService.registerOrLogin(email, clientDeviceInfo);
         return ResponseEntity.ok(tokens);
 

@@ -5,10 +5,14 @@ import com.example.locostage.application.exception.custom.JwtTokenException;
 import com.example.locostage.application.ui.response.ErrorResponse;
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -58,14 +62,19 @@ public class GlobalExceptionHandler {
         return createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            MethodArgumentNotValidException e) {
+        List<String> messages = e.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage).collect(
+                        Collectors.toList());
+
+        return createErrorResponse(HttpStatus.BAD_REQUEST, String.join(",", messages));
 
 
-
-
-
+    }
 
     private ResponseEntity<ErrorResponse> createErrorResponse(HttpStatus status, String message) {
-
         ErrorResponse errorResponse = ErrorResponse.create(status.value(), message,
                 System.currentTimeMillis());
         return new ResponseEntity<>(errorResponse, status);
