@@ -28,7 +28,7 @@ public class UserApplicationService {
 
         // 여기서한번 -> 이메일 인증할떄 다시한번 -> 데이터접근두번 . 캐시로 막는다 .
 
-        User user = userService.findByEmail(email).orElse(User.create(email, true));
+        User user = userService.findByEmail(email).orElse(User.create(email));
 
         boolean reauthenticate = isReauthenticate(user ,clientDeviceInfo);
 

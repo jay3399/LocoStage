@@ -41,9 +41,6 @@ public class User extends BaseEntity implements Serializable {
         private String deviceInformation;
 
         @Column(nullable = true)
-        private Integer loginAttempts;
-
-        @Column(nullable = true)
         private String accountStatus;
 
         private String refreshToken;
@@ -61,7 +58,7 @@ public class User extends BaseEntity implements Serializable {
         private List<UserArtist> userArtists = new ArrayList<>();
 
 
-        public static User create(String email , boolean isNew) {
+        public static User create(String email) {
                 User user = new User();
                 user.email = email;
                 user.isNewUser = true;
