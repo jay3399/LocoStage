@@ -98,9 +98,9 @@ public class UserApplicationService {
 
     private static boolean isNewDevice(User user, String clientDeviceInfo) {
         if (clientDeviceInfo != null && clientDeviceInfo.equals(user.getDeviceInformation())) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public User findByRefreshToken(String refreshToken) {

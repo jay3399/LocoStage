@@ -61,7 +61,6 @@
   <button id="loginBtn">로그인/가입하기</button>
 </div>
 
-<!-- Add this for the email popup -->
 <div id="emailPopup" class="hidden">
   <h2>이메일로 로그인/가입</h2>
   <input id="emailInput" type="email" placeholder="이메일을 입력하세요">
@@ -77,19 +76,16 @@
   <button id="request-location">Allow</button>
 </div>
 
-<!-- Displaying EventDTO -->
 <div id="event-list">
   <h3>Events</h3>
   <div class="scrolling-wrapper" id="events"></div>
 </div>
 
-<!-- Displaying FestivalDTO -->
 <div id="festival-list">
   <h3>Festivals</h3>
   <div class="scrolling-wrapper" id="festivals"></div>
 </div>
 
-<!-- Displaying ArtistDTO -->
 <div id="artist-list">
   <h3>Artists</h3>
   <div class="scrolling-wrapper" id="artists"></div>
@@ -171,7 +167,6 @@
     })
   }
 
-  // Load data on page load
   window.onload = loadMainPageData;
 
 
